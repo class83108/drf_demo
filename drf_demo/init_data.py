@@ -9,7 +9,7 @@ user2 = User.objects.create_user(username="bob", password="password456")
 
 # 創建工作空間
 workspace = Workspace.objects.create(name="DRF Project", owner=user1)
-workspace.members.add(user2)
+workspace.members.add(user1)
 
 # 創建文檔
 doc1 = Document.objects.create(
@@ -23,7 +23,7 @@ doc2 = Document.objects.create(
     title="DRF Views",
     content="DRF provides generic views for common operations.",
     workspace=workspace,
-    created_by=user2,
+    created_by=user1,
 )
 
 doc3 = Document.objects.create(
