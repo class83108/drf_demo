@@ -10,6 +10,8 @@ from .views import (
 
 
 router = DefaultRouter()
+
+
 router.register(r"workspaces", WorkspaceViewSet)
 
 urlpatterns = [
