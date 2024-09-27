@@ -1,4 +1,7 @@
 from rest_framework import status
+from rest_framework import generics
+from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.decorators import api_view
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (
@@ -12,7 +15,7 @@ from rest_framework.mixins import (
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Workspace
+from .models import Workspace, Document
 from .serializers import WorkspaceSerializer, DocumentSerializer
 
 import json
@@ -137,3 +140,55 @@ class WorkspaceList(GenericAPIView, ListModelMixin, CreateModelMixin):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+
+class WorkspaceDetail(
+    GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
+):
+    queryset = Workspace.objects.all()
+    serializer_class = WorkspaceSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if "members" in self.request.data:
+            instance.members.set(self.request.data["members"])
+
+
+class WorkspaceList(generics.ListCreateAPIView):
+    queryset = Workspace.objects.all()
+    serializer_class = WorkspaceSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Workspace.objects.all()
+    serializer_class = WorkspaceSerializer
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if "members" in self.request.data:
+            instance.members.set(self.request.data["members"])
+
+
+class WorkspaceViewSet(viewsets.ModelViewSet):
+    # 限制只允許某些 HTTP 方法
+    # http_method_names = ["get"]
+    queryset = Workspace.objects.all()
+    serializer_class = WorkspaceSerializer
+
+    @action(detail=True, methods=["get"])
+    def document_names(self, request, pk=None):
+        workspace = self.get_object()
+        document_names = workspace.documents.values_list("title", flat=True)
+        return Response({"document_names": list(document_names)})
