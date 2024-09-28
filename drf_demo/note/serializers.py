@@ -6,68 +6,22 @@ from .models import Document, Workspace
 User = get_user_model()
 
 
-# class WorkspaceSerializer(serializers.Serializer):
-#     id = serializers.IntegerField(read_only=True)
-#     name = serializers.CharField(max_length=100)
-#     owner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-#     members = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all())
-#     created_at = serializers.DateTimeField(read_only=True)
+class BaseSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(read_only=True)
 
-#     def create(self, validated_data):
-#         members = validated_data.pop("members", [])
-#         workspace = Workspace.objects.create(**validated_data)
-#         workspace.members.set(members)
-#         return workspace
-
-#     def update(self, instance, validated_data):
-#         instance.name = validated_data.get("name", instance.name)
-#         instance.owner = validated_data.get("owner", instance.owner)
-
-#         members = validated_data.get("members")
-#         if members is not None:
-#             instance.members.set(members)
-
-#         instance.save()
-#         return instance
-
-
-class WorkspaceSerializer(serializers.ModelSerializer):
     class Meta:
+        abstract = True
+        fields = ["created_at"]
+
+
+class WorkspaceSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
         model = Workspace
-        fields = [
-            "id",
-            "name",
-            "owner",
-            "members",
-            "created_at",
-        ]
-        read_only_fields = ["id", "created_at"]
-
-    def create(self, validated_data):
-        if isinstance(validated_data, list):
-            return Workspace.objects.bulk_create(validated_data)
-        return super().create(validated_data)
-
-    # def create(self, validated_data):
-    #     members = validated_data.pop("members", [])
-    #     workspace = Workspace.objects.create(**validated_data)
-    #     workspace.members.set(members)
-    #     return workspace
-
-    # def update(self, instance, validated_data):
-    #     instance.name = validated_data.get("name", instance.name)
-    #     instance.owner = validated_data.get("owner", instance.owner)
-
-    #     members = validated_data.get("members")
-    #     if members is not None:
-    #         instance.members.set(members)
-
-    #     instance.save()
-    #     return instance
+        # fields = ["id", "name", "owner", "members", "created_at"]
 
 
-class DocumentSerializer(serializers.ModelSerializer):
-    class Meta:
+class DocumentSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
         model = Document
         fields = [
             "id",
@@ -78,14 +32,58 @@ class DocumentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at"]
 
-    # def create(self, validated_data):
-    #     return Document.objects.create(**validated_data)
 
-    # def update(self, instance, validated_data):
-    #     instance.title = validated_data.get("title", instance.title)
-    #     instance.content = validated_data.get("content", instance.content)
-    #     instance.workspace = validated_data.get("workspace", instance.workspace)
-    #     instance.save()
-    #     return instance
+# class WorkspaceSerializer(serializers.ModelSerializer):
+
+#     # owner = serializers.StringRelatedField(read_only=True)
+#     owner_name = serializers.CharField(source="owner.username", read_only=True)
+#     # members = serializers.StringRelatedField(many=True, read_only=True)
+#     members_name = serializers.StringRelatedField(
+#         source="members", many=True, read_only=True
+#     )
+#     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+#     # StringRelatedField may be used to represent the target of the relationship using its __str__ method.
+#     document_count = serializers.SerializerMethodField()
+
+#     class Meta:
+#         model = Workspace
+#         fields = [
+#             "id",
+#             "name",
+#             # "owner",
+#             # "members",
+#             "owner_name",
+#             "members_name",
+#             "created_at",
+#             "document_count",
+#         ]
+#         read_only_fields = ["id", "created_at"]
+
+#     def create(self, validated_data):
+#         if isinstance(validated_data, list):
+#             return Workspace.objects.bulk_create(validated_data)
+#         return super().create(validated_data)
+
+#     def get_document_count(self, instance):
+#         return instance.documents.count()
+
+#     def to_representation(self, instance):
+#         representation = super().to_representation(instance)
+#         representation["document_info"] = instance.documents.values("title")
+#         return representation
+
+
+# class DocumentSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Document
+#         fields = [
+#             "id",
+#             "title",
+#             "content",
+#             "workspace",
+#             "created_by",
+#             "created_at",
+#             "updated_at",
+#         ]
+#         read_only_fields = ["id", "created_at", "updated_at"]
