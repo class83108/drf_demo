@@ -16,7 +16,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Workspace, Document
-from .serializers import WorkspaceSerializer, DocumentSerializer
+from .serializers import (
+    WorkspaceSerializer,
+    DocumentSerializer,
+    WorkspaceDetailSerializer,
+)
 
 import json
 
@@ -107,11 +111,15 @@ def workspace_detail(request, pk):
 
 class WorkspaceDetail(GenericAPIView):
     queryset = Workspace.objects.all()
-    serializer_class = WorkspaceSerializer
+    serializer_class = WorkspaceDetailSerializer
 
     def get(self, request, pk):
         workspace = self.get_object()
-        serializer = self.get_serializer(workspace)
+        # serializer = self.get_serializer(workspace, context={"request": request})
+        context = self.get_serializer_context()
+        context.update({"some_extra_data": "value"})
+        serializer = self.get_serializer(workspace, context=context)
+
         return Response(serializer.data)
 
     def put(self, request, pk):
@@ -142,25 +150,25 @@ class WorkspaceList(GenericAPIView, ListModelMixin, CreateModelMixin):
         serializer.save(owner=self.request.user)
 
 
-class WorkspaceDetail(
-    GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
-):
-    queryset = Workspace.objects.all()
-    serializer_class = WorkspaceSerializer
+# class WorkspaceDetail(
+#     GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
+# ):
+#     queryset = Workspace.objects.all()
+#     serializer_class = WorkspaceSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)
 
-    def perform_update(self, serializer):
-        instance = serializer.save()
-        if "members" in self.request.data:
-            instance.members.set(self.request.data["members"])
+#     def perform_update(self, serializer):
+#         instance = serializer.save()
+#         if "members" in self.request.data:
+#             instance.members.set(self.request.data["members"])
 
 
 class WorkspaceList(generics.ListCreateAPIView):
@@ -171,14 +179,14 @@ class WorkspaceList(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
-class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Workspace.objects.all()
-    serializer_class = WorkspaceSerializer
+# class WorkspaceDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Workspace.objects.all()
+#     serializer_class = WorkspaceSerializer
 
-    def perform_update(self, serializer):
-        instance = serializer.save()
-        if "members" in self.request.data:
-            instance.members.set(self.request.data["members"])
+#     def perform_update(self, serializer):
+#         instance = serializer.save()
+#         if "members" in self.request.data:
+#             instance.members.set(self.request.data["members"])
 
 
 class WorkspaceViewSet(viewsets.ModelViewSet):
