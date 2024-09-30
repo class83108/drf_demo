@@ -54,9 +54,16 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # DRF
     "rest_framework",
+    "rest_framework.authtoken",
     # 自定義 app
     "note",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
