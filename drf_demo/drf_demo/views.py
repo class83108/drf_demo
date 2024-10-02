@@ -104,7 +104,6 @@ class CustomTokenRefreshView(APIView):
                 {"access": access_token, "message": "Token refreshed successfully"}
             )
 
-            # 可選：更新 refresh token
             new_refresh_token = str(token)
             response.set_cookie(
                 "refresh_token",
@@ -112,7 +111,7 @@ class CustomTokenRefreshView(APIView):
                 httponly=True,
                 samesite="Lax",
                 path="/",
-                max_age=3600 * 24 * 14,  # 14 days
+                max_age=3600 * 24,  # 1天
             )
 
             return response
