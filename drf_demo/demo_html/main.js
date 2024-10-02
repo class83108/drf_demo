@@ -118,7 +118,7 @@ async function refreshAccessToken() {
     const data = await response.json();
     if (data.access) {
       localStorage.setItem("accessToken", data.access);
-      return data.access;
+      output.innerHTML = "Token refreshed successfully";
     } else {
       throw new Error("No access token received");
     }
