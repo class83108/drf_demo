@@ -10,8 +10,6 @@ async function getOTP() {
     return;
   }
   try {
-    // get csrf token
-
     const response = await fetch(`${API_BASE_URL}/otp/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
