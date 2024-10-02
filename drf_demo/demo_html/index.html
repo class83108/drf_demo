@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JWT Authentication Demo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      input,
+      button {
+        margin: 10px 0;
+        padding: 5px;
+      }
+      #output {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>JWT Authentication Demo</h1>
+    <input type="text" id="username" placeholder="Enter username" />
+    <input type="password" id="otp" placeholder="Enter OTP" />
+    <button onclick="getOTP()">Get OTP</button>
+    <button onclick="getToken()">Get Token</button>
+    <button onclick="accessProtectedResource()">
+      Access Protected Resource
+    </button>
+    <button onclick="refreshAccessToken()">Refresh Token</button>
+    <button onclick="debugRequest()">Debug</button>
+    <div id="output"></div>
+
+    <script src="/drf_demo/demo_html/main.js"></script>
+  </body>
+</html>

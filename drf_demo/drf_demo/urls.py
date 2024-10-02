@@ -17,11 +17,23 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.authtoken import views
+
+
+from .custom_authentication import CustomJWTAuthentication
+from .views import (
+    OTPRequestView,
+    CustomTokenObtainPairView,
+    ProtectedView,
+    CustomTokenRefreshView,
+    DebugView,
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
-    path("api-token-auth/", views.obtain_auth_token),
-    path("note/", include(("note.urls", "note"), namespace="note")),
+    path("otp/", OTPRequestView.as_view(), name="otp_request"),
+    path("token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),
+    path("protected/", ProtectedView.as_view(), name="protected_view"),
+    path("debug/", DebugView.as_view(), name="debug_view"),
 ]
