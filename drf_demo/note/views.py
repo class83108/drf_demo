@@ -3,6 +3,8 @@ from rest_framework.authentication import BaseAuthentication, TokenAuthenticatio
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
+from rest_framework import filters
 from django.contrib.auth.models import User
 from .models import Workspace, Document
 from .serializers import (
@@ -12,9 +14,15 @@ from .serializers import (
 from rest_framework.authtoken.views import obtain_auth_token
 
 
+class CustomPagination(LimitOffsetPagination):
+    default_limit = 2
+    max_limit = 10
+
+
 class WorkspaceViewSet(viewsets.ModelViewSet):
-    authentication_classes = [BaseAuthentication, TokenAuthentication]
-    throttle_classes = [UserRateThrottle]
+    # authentication_classes = [BaseAuthentication, TokenAuthentication]
+    # throttle_classes = [UserRateThrottle]
+    pagination_class = PageNumberPagination
     queryset = Workspace.objects.all()
     serializer_class = WorkspaceSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -83,10 +91,13 @@ class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["workspace__owner__username"]
+    ordering_fields = ["created_at", "updated_at", "id"]
 
-    def get_queryset(self):
-        # 用戶只能看到他們有權限的工作區中的文檔
-        return Document.objects.filter(workspace__memberships__user=self.request.user)
+    # def get_queryset(self):
+    #     # 用戶只能看到他們有權限的工作區中的文檔
+    #     return Document.objects.filter(workspace__memberships__user=self.request.user)
 
     def perform_create(self, serializer):
         workspace = serializer.validated_data["workspace"]

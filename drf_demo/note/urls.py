@@ -1,12 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from .views import WorkspaceViewSet
+from .views import WorkspaceViewSet, DocumentViewSet
 
 router = DefaultRouter()
 
 
 router.register(r"workspaces", WorkspaceViewSet)
+router.register(r"documents", DocumentViewSet)
 
 urlpatterns = [
     # path("workspaces/", workspace_list, name="workspace-list"),

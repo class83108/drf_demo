@@ -36,4 +36,5 @@ urlpatterns = [
     path("token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),
     path("protected/", ProtectedView.as_view(), name="protected_view"),
     path("debug/", DebugView.as_view(), name="debug_view"),
+    path("note/", include("note.urls")),
 ]
