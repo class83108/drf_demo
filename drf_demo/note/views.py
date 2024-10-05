@@ -2,6 +2,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.authentication import BaseAuthentication, TokenAuthentication
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
 from django.contrib.auth.models import User
 from .models import Workspace, Document
 from .serializers import (
@@ -13,6 +14,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 class WorkspaceViewSet(viewsets.ModelViewSet):
     authentication_classes = [BaseAuthentication, TokenAuthentication]
+    throttle_classes = [UserRateThrottle]
     queryset = Workspace.objects.all()
     serializer_class = WorkspaceSerializer
     permission_classes = [permissions.IsAuthenticated]
