@@ -11,7 +11,6 @@ from .serializers import (
     WorkspaceSerializer,
     DocumentSerializer,
 )
-from rest_framework.authtoken.views import obtain_auth_token
 
 
 class CustomPagination(LimitOffsetPagination):
@@ -20,8 +19,8 @@ class CustomPagination(LimitOffsetPagination):
 
 
 class WorkspaceViewSet(viewsets.ModelViewSet):
-    # authentication_classes = [BaseAuthentication, TokenAuthentication]
-    # throttle_classes = [UserRateThrottle]
+    authentication_classes = [BaseAuthentication, TokenAuthentication]
+    throttle_classes = [UserRateThrottle]
     pagination_class = PageNumberPagination
     queryset = Workspace.objects.all()
     serializer_class = WorkspaceSerializer

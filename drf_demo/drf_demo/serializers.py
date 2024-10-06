@@ -7,7 +7,11 @@ User = get_user_model()
 
 
 class OTPRequestSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    username = serializers.CharField(
+        help_text="User's username",
+        max_length=150,
+        min_length=3,
+    )
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

@@ -12,6 +12,9 @@ from .serializers import OTPRequestSerializer, CustomTokenObtainPairSerializer
 import random
 import string
 
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
+from rest_framework import serializers
+
 
 User = get_user_model()
 
@@ -20,6 +23,55 @@ def generate_otp():
     return "".join(random.choices(string.digits, k=6))
 
 
+class OTPResponseSerializer(serializers.Serializer):
+    message = serializers.CharField()
+
+
+class ErrorResponseSerializer(serializers.Serializer):
+    error = serializers.CharField()
+
+
+@extend_schema(
+    tags=["Authentication"],
+    description="Request an OTP for user authentication. The OTP will be sent to the user's registered email address.",
+    request=OTPRequestSerializer,
+    responses={
+        status.HTTP_200_OK: OpenApiResponse(
+            response=OTPResponseSerializer, description="OTP sent successfully"
+        ),
+        status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+            response=ErrorResponseSerializer, description="Invalid input data"
+        ),
+        status.HTTP_404_NOT_FOUND: OpenApiResponse(
+            response=ErrorResponseSerializer, description="User not found"
+        ),
+    },
+    examples=[
+        OpenApiExample(
+            "Valid request",
+            summary="Request OTP for existing user",
+            description='Request an OTP for user "john_doe"',
+            value={"username": "john_doe"},
+            request_only=True,
+        ),
+        OpenApiExample(
+            "Success response",
+            summary="OTP sent successfully",
+            description="Response when OTP is successfully sent",
+            value={"message": "OTP sent successfully."},
+            response_only=True,
+            status_codes=["200"],
+        ),
+        OpenApiExample(
+            "User not found response",
+            summary="User not found error",
+            description="Response when the requested user does not exist",
+            value={"error": "User not found."},
+            response_only=True,
+            status_codes=["404"],
+        ),
+    ],
+)
 class OTPRequestView(APIView):
     def post(self, request):
         serializer = OTPRequestSerializer(data=request.data)

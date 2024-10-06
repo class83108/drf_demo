@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "corsheaders",
+    "drf_spectacular",
     # 自定義 app
     "note",
 ]
@@ -171,8 +172,17 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         # "rest_framework_simplejwt.authentication.JWTAuthentication", # 這是預設的 JWT 驗證器
-        # "drf_demo.custom_authentication.CustomJWTAuthentication",  # 使用自定義的 JWT 驗證器
+        "drf_demo.custom_authentication.CustomJWTAuthentication",  # 使用自定義的 JWT 驗證器
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Note API Documentation",
+    "DESCRIPTION": "API documentation for Note app",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # OTHER SETTINGS
 }
 
 from datetime import timedelta
