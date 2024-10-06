@@ -16,6 +16,7 @@ django-cors-headers = "^4.4.0"
 django-redis = "^5.4.0"
 drf-spectacular = "^0.27.2"
 coreapi = "^2.3.3"
+openapi = "^2.0.0"
 
 
 [build-system]

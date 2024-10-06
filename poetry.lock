@@ -460,6 +460,27 @@ files = [
 ]
 
 [[package]]
+name = "openapi"
+version = "2.0.0"
+description = "Python OpenAPI 2.0 (Swagger) object model"
+optional = false
+python-versions = "*"
+files = [
+    {file = "openapi-2.0.0-py2.py3-none-any.whl", hash = "sha256:caaf621b98434e36853d0215c219e78002ed9959c9d21c9e2744ab460a6f7088"},
+    {file = "openapi-2.0.0.tar.gz", hash = "sha256:dad6f8e2c638500113820f04763fcf6eac1fea0173340945973325a28f336264"},
+]
+
+[package.dependencies]
+inflection = ">=0.5.1"
+jsonschema = ">=3.2.0"
+
+[package.extras]
+lint = ["flake8", "flake8-isort", "flake8-print"]
+test = ["PyHamcrest (>=2.1.0)", "PyYAML (>=6.0.1)", "coverage (>=7.5.3)", "pytest (>=8.2.0)", "pytest-cov (>=5.0.0)"]
+typehinting = ["mypy", "types-PyYAML", "types-psycopg2", "types-python-dateutil", "types-pytz", "types-setuptools"]
+yaml = ["PyYAML (>=3.12)"]
+
+[[package]]
 name = "psycopg2-binary"
 version = "2.9.9"
 description = "psycopg2 - Python-PostgreSQL Database Adapter"
@@ -853,4 +874,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "c9b8d3b05c2509eddc3629ed1544a4cb914b177337875db8fabb8fcbbc203137"
+content-hash = "6bdc06bfe5adbfbb0998e373e524b837644116eb07b716084c64604dbb6d54ed"
